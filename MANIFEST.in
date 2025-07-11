@@ -1,4 +1,4 @@
 include README.md
 include LICENSE
 include requirements.txt
-recursive-include cli_vault *.py
+recursive-include kini *.py

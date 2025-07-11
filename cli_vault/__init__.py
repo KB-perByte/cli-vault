@@ -1,5 +1,5 @@
 """
-CLI Vault - A secure command-line password manager
+Kini - A secure command-line password manager
 """
 
 __version__ = "1.0.0"

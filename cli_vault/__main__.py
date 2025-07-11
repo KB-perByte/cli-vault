@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-CLI Vault - Main entry point for the command-line interface
+Kini - Main entry point for the command-line interface
 """
 
 import sys

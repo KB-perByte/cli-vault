@@ -9,14 +9,14 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
     ]
 
 setup(
-    name="cli-vault",
+    name="kini",
     version="1.0.0",
     author="Sagar Paul",
     author_email="paul.sagar@yahoo.com",
     description="A secure command-line password manager with encryption and backup capabilities",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com//KB-perByte/cli-vault",
+    url="https://github.com//KB-perByte/kini",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -36,12 +36,12 @@ setup(
     install_requires=requirements,
     entry_points={
         "console_scripts": [
-            "cli-vault=cli_vault.__main__:main",
+            "kini=kini.__main__:main",
         ],
     },
-    keywords="password manager security encryption cli",
+    keywords="password manager security encryption cli kini",
     project_urls={
-        "Bug Reports": "https://github.com/KB-perByte/cli-vault/issues",
-        "Source": "https://github.com/KB-perByte/cli-vault",
+        "Bug Reports": "https://github.com/KB-perByte/kini/issues",
+        "Source": "https://github.com/KB-perByte/kini",
     },
 )

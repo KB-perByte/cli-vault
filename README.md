@@ -1,4 +1,4 @@
-# CLI Vault - Secure Password Manager
+# Kini - Secure Password Manager
 
 A secure command-line password manager with encryption, hashing, backup, and search capabilities.
 
@@ -16,14 +16,14 @@ A secure command-line password manager with encryption, hashing, backup, and sea
 ### From PyPI (to be published)
 
 ```bash
-pip install cli-vault
+pip install kini
 ```
 
 ### From Source
 
 ```bash
-git clone https://github.com/yourusername/cli-vault.git
-cd cli-vault
+git clone https://github.com/yourusername/kini.git
+cd kini
 pip install -e .
 ```
 
@@ -32,7 +32,7 @@ pip install -e .
 ### First Time Setup
 
 ```bash
-cli-vault list
+kini list
 # This will prompt you to create a master password
 ```
 
@@ -40,53 +40,53 @@ cli-vault list
 
 ```bash
 # Interactive mode
-cli-vault add
+kini add
 
 # Command line mode
-cli-vault add -s "gmail" -u "user@gmail.com" -p "mypassword"
+kini add -s "gmail" -u "user@gmail.com" -p "mypassword"
 ```
 
 ### Retrieving Passwords
 
 ```bash
 # Get specific password
-cli-vault get -s "gmail"
+kini get -s "gmail"
 
 # Search for passwords
-cli-vault search -q "mail"
+kini search -q "mail"
 
 # List all passwords
-cli-vault list
+kini list
 ```
 
 ### Password History
 
 ```bash
 # View password history for a service
-cli-vault history -s "gmail"
+kini history -s "gmail"
 ```
 
 ### Backup & Restore
 
 ```bash
 # Create backup
-cli-vault backup
+kini backup
 
 # List backups
-cli-vault backup list
+kini backup list
 
 # Restore from backup
-cli-vault restore -b "passwords_backup_20240101_120000.json"
+kini restore -b "passwords_backup_20240101_120000.json"
 ```
 
 ### Other Commands
 
 ```bash
 # Delete a password
-cli-vault delete -s "gmail"
+kini delete -s "gmail"
 
 # Show version
-cli-vault --version
+kini --version
 ```
 
 ## Security
@@ -95,12 +95,12 @@ cli-vault --version
 - Master password is hashed using SHA-256
 - Key derivation uses PBKDF2 with 100,000 iterations
 - Unique salt for each installation
-- Data stored locally in `~/.cli_vault/`
+- Data stored locally in `~/.kini/`
 
 ## Data Location
 
-- **Linux/macOS**: `~/.cli_vault/`
-- **Windows**: `%USERPROFILE%\.cli_vault\`
+- **Linux/macOS**: `~/.kini/`
+- **Windows**: `%USERPROFILE%\.kini\`
 
 ## License
 

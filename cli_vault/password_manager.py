@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Secure Password Manager CLI
+Secure Password Manager - Kini
 A command-line password manager with encryption, hashing, backup, and search capabilities.
 """
 
@@ -20,7 +20,7 @@ import base64
 
 
 class PasswordManager:
-    def __init__(self, data_dir="~/.cli_vault"):
+    def __init__(self, data_dir="~/.kini"):
         self.data_dir = Path(data_dir).expanduser()
         self.data_dir.mkdir(exist_ok=True)
 
@@ -73,7 +73,7 @@ class PasswordManager:
         if self.master_hash_file.exists():
             return False
 
-        print("Setting up CLI Vault...")
+        print("Setting up Kini ...")
         print(
             "Please create a master password (this will be used to access all your passwords)"
         )
@@ -329,9 +329,9 @@ class PasswordManager:
 
 
 def main():
-    """Main entry point for CLI Vault"""
+    """Main entry point for Kini"""
     parser = argparse.ArgumentParser(
-        description="CLI Vault - Secure Password Manager", prog="cli-vault"
+        description="Kini - Secure Password Manager", prog="kini"
     )
     parser.add_argument(
         "command",
@@ -352,7 +352,7 @@ def main():
     parser.add_argument("--password", "-p", help="Password")
     parser.add_argument("--query", "-q", help="Search query")
     parser.add_argument("--backup-file", "-b", help="Backup file name")
-    parser.add_argument("--version", "-v", action="version", version="CLI Vault 1.0.0")
+    parser.add_argument("--version", "-v", action="version", version="Kini 1.0.0")
 
     args = parser.parse_args()
 
