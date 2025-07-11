@@ -1,103 +1,83 @@
-Flow for v1.0.0
+Flow
+
 ```mermaid
-flowchart TD
-    A[User runs 'kini command'] --> B[__main__.py Entry Point]
-    B --> C[main() in password_manager.py]
-    C --> D[ArgumentParser Setup]
-    D --> E[PasswordManager Init]
-    
-    E --> F[Data Directory Setup]
-    F --> G[~/.kini/ directory]
-    G --> H[passwords.json - Encrypted DB]
-    G --> I[master.hash - Master Password Hash]
-    G --> J[salt.key - Encryption Salt]
-    G --> K[backups/ - Backup Directory]
-    
-    C --> L[Authentication Check]
-    L --> M{Master Password Exists?}
-    M -->|No| N[First Time Setup]
-    M -->|Yes| O[Authenticate User]
-    
-    N --> P[Welcome Message + Mascot]
-    P --> Q[Create Master Password]
-    Q --> R[Hash Master Password SHA-256]
-    R --> S[Generate Salt os.urandom(16)]
-    S --> T[Generate Key PBKDF2HMAC]
-    T --> U[Create Fernet Cipher]
-    U --> V[Initialize Empty Database]
-    
-    O --> W[Load Master Hash]
-    W --> X[Verify Password Hash]
-    X --> Y{Password Valid?}
-    Y -->|No| Z[Authentication Failed]
-    Y -->|Yes| AA[Load Salt]
-    AA --> BB[Generate Key PBKDF2HMAC]
-    BB --> CC[Create Fernet Cipher]
-    CC --> DD[Load & Decrypt Database]
-    
-    C --> EE[Command Execution]
-    EE --> FF{Command Type}
-    
-    FF -->|add| GG[Add Password]
-    FF -->|get| HH[Get Password]
-    FF -->|search| II[Search Passwords]
-    FF -->|list| JJ[List Passwords]
-    FF -->|history| KK[Show History]
-    FF -->|delete| LL[Delete Password]
-    FF -->|backup| MM[Create Backup]
-    FF -->|restore| NN[Restore Backup]
-    
-    GG --> OO[Interactive/CLI Input]
-    OO --> PP[Store in data.passwords]
-    PP --> QQ[Move Old to History]
-    QQ --> RR[Encrypt & Save Database]
-    
-    HH --> SS[Find Service in DB]
-    SS --> TT[Display Password Info]
-    
-    II --> UU[Query Match Against Services]
-    UU --> VV[Display Matches]
-    VV --> WW[Interactive Selection]
-    
-    MM --> XX[Copy DB to Backup Dir]
-    XX --> YY[Timestamp Filename]
-    
-    NN --> ZZ[Verify Backup Exists]
-    ZZ --> AAA[Copy Backup to DB]
-    AAA --> BBB[Reload Database]
-    
-    subgraph "Security Layer"
-        CCC[AES-256 Encryption Fernet]
-        DDD[PBKDF2HMAC Key Derivation]
-        EEE[SHA-256 Password Hashing]
-        FFF[100,000 Iterations]
-        GGG[16-byte Random Salt]
+graph TD
+    A[User runs 'kini command'] --> B[__main__.py]
+    B --> C[password_manager.py:main()]
+
+    subgraph "Setup"
+        C --> D[Initialize PasswordManager]
+        D --> E[Setup Data Directory: ~/.kini]
+        subgraph "File System"
+            E --> F[passwords.json]
+            E --> G[master.hash]
+            E --> H[salt.key]
+            E --> I[backups/]
+        end
     end
-    
-    subgraph "Data Structure"
-        HHH[{"passwords": {<br/>&nbsp;&nbsp;"service": {<br/>&nbsp;&nbsp;&nbsp;&nbsp;"username": "user",<br/>&nbsp;&nbsp;&nbsp;&nbsp;"password": "pass",<br/>&nbsp;&nbsp;&nbsp;&nbsp;"created_at": "timestamp",<br/>&nbsp;&nbsp;&nbsp;&nbsp;"updated_at": "timestamp"<br/>&nbsp;&nbsp;}<br/>},<br/>"history": {<br/>&nbsp;&nbsp;"service": [old_entries]<br/>}}]
+
+    subgraph "Authentication"
+        C --> J{Master Password Set?}
+        J -->|No| K[First-Time Setup]
+        J -->|Yes| L[Login]
+
+        subgraph "First-Time Setup"
+            K --> K1[Create Master Password]
+            K1 --> K2[Generate Salt & Key]
+            K2 --> K3[Initialize Encrypted DB]
+        end
+
+        subgraph "Login"
+            L --> L1[Verify Master Password]
+            L1 -- Valid --> L2[Load & Decrypt Database]
+            L1 -- Invalid --> L3[Authentication Failed]
+        end
     end
-    
-    subgraph "File System"
-        III[~/.kini/passwords.json]
-        JJJ[~/.kini/master.hash]
-        KKK[~/.kini/salt.key]
-        LLL[~/.kini/backups/]
+
+    subgraph "Commands"
+        C --> M[Parse Command]
+        M --> N{Command Type}
+        N -->|add| O[Add Password]
+        N -->|get| P[Get Password]
+        N -->|search| Q[Search Passwords]
+        N -->|list| R[List Services]
+        N -->|delete| S[Delete Password]
+        N -->|backup| T[Backup Database]
+        N -->|restore| U[Restore Database]
     end
-    
-    RR --> CCC
-    DD --> CCC
-    T --> DDD
-    BB --> DDD
-    R --> EEE
-    X --> EEE
-    
-    style A fill:#e1f5fe
-    style CCC fill:#ffebee
-    style DDD fill:#ffebee
-    style EEE fill:#ffebee
-    style HHH fill:#f3e5f5
-    style III fill:#e8f5e8
-    style JJJ fill:#e8f5e8
-    style KKK fill:#e8f5e8
+
+    subgraph "Data Operations"
+        O --> V[Encrypt & Save]
+        P --> W[Find & Display]
+        Q --> X[Search & Display]
+        R --> Y[List All]
+        S --> Z[Delete & Save]
+        T --> AA[Create Backup File]
+        U --> BB[Restore From Backup]
+    end
+
+    subgraph "Core Components"
+        subgraph "Security"
+            Sec1[AES-256 Encryption]
+            Sec2[PBKDF2 HMAC Key Derivation]
+            Sec3[SHA-256 Hashing]
+            Sec4[16-byte Salt]
+        end
+        subgraph "Data"
+            Data1[JSON: {passwords, history}]
+        end
+    end
+
+    K1 --> Sec3
+    L1 --> Sec3
+    K2 --> Sec2
+    K2 --> Sec4
+    L2 --> Sec2
+    V --> Sec1
+    L2 --> Sec1
+    K3 --> Data1
+    V --> Data1
+    W --> L2
+    X --> L2
+    Y --> L2
 ```
