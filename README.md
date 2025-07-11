@@ -24,7 +24,7 @@ pip install kini
 ### From Source
 
 ```bash
-git clone https://github.com/yourusername/kini.git
+git clone https://github.com/KB-peByte/kini.git
 cd kini
 pip install -e .
 ```
