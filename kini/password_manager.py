@@ -4,19 +4,20 @@ Secure Password Manager - Kini
 A command-line password manager with encryption, hashing, backup, and search capabilities.
 """
 
-import os
-import json
-import hashlib
-import getpass
 import argparse
+import base64
+import getpass
+import hashlib
+import json
+import os
 import shutil
 import sys
 from datetime import datetime
 from pathlib import Path
+
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-import base64
 
 
 class PasswordManager:

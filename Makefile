@@ -1,4 +1,4 @@
-.PHONY: help install install-dev test test-cov clean lint format
+.PHONY: help install install-dev test test-cov clean lint format sort-imports
 
 # Default target
 help:
@@ -9,6 +9,7 @@ help:
 	@echo "  test-cov     - Run tests with coverage report"
 	@echo "  lint         - Run linting (flake8)"
 	@echo "  format       - Format code (black)"
+	@echo "  sort-imports - Sort imports (isort)"
 	@echo "  clean        - Clean up build artifacts"
 
 # Install production dependencies
@@ -34,6 +35,10 @@ lint:
 # Format code
 format:
 	black kini tests
+
+# Sort imports
+sort-imports:
+	isort kini tests
 
 # Clean build artifacts
 clean:

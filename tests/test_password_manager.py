@@ -1,10 +1,11 @@
 import os
-import tempfile
 import shutil
-import pytest
-from unittest.mock import patch, MagicMock
-from pathlib import Path
 import sys
+import tempfile
+from pathlib import Path
+from unittest.mock import MagicMock, patch
+
+import pytest
 
 # Add the parent directory to the path so we can import kini
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
@@ -391,7 +392,7 @@ class TestMainFunction:
         yield temp_dir
         shutil.rmtree(temp_dir)
 
-    @patch("sys.argv", ["cli-vault", "list"])
+    @patch("sys.argv", ["kini", "list"])
     @patch("getpass.getpass")
     @patch("kini.password_manager.PasswordManager")
     def test_main_list_command(self, mock_pm_class, mock_getpass):
@@ -406,7 +407,7 @@ class TestMainFunction:
         mock_pm.authenticate.assert_called_once()
         mock_pm.list_passwords.assert_called_once()
 
-    @patch("sys.argv", ["cli-vault", "add", "-s", "test", "-u", "user", "-p", "pass"])
+    @patch("sys.argv", ["kini", "add", "-s", "test", "-u", "user", "-p", "pass"])
     @patch("getpass.getpass")
     @patch("kini.password_manager.PasswordManager")
     def test_main_add_command(self, mock_pm_class, mock_getpass):
@@ -420,7 +421,7 @@ class TestMainFunction:
         assert result == 0
         mock_pm.add_password.assert_called_once_with("test", "user", "pass")
 
-    @patch("sys.argv", ["cli-vault", "get", "-s", "test"])
+    @patch("sys.argv", ["kini", "get", "-s", "test"])
     @patch("getpass.getpass")
     @patch("kini.password_manager.PasswordManager")
     def test_main_get_command(self, mock_pm_class, mock_getpass):
@@ -434,7 +435,7 @@ class TestMainFunction:
         assert result == 0
         mock_pm.get_password.assert_called_once_with("test")
 
-    @patch("sys.argv", ["cli-vault", "search", "-q", "query"])
+    @patch("sys.argv", ["kini", "search", "-q", "query"])
     @patch("getpass.getpass")
     @patch("kini.password_manager.PasswordManager")
     def test_main_search_command(self, mock_pm_class, mock_getpass):
@@ -448,7 +449,7 @@ class TestMainFunction:
         assert result == 0
         mock_pm.search_passwords.assert_called_once_with("query")
 
-    @patch("sys.argv", ["cli-vault", "backup"])
+    @patch("sys.argv", ["kini", "backup"])
     @patch("getpass.getpass")
     @patch("kini.password_manager.PasswordManager")
     def test_main_backup_command(self, mock_pm_class, mock_getpass):
@@ -462,7 +463,7 @@ class TestMainFunction:
         assert result == 0
         mock_pm.create_backup.assert_called_once()
 
-    @patch("sys.argv", ["cli-vault", "list"])
+    @patch("sys.argv", ["kini", "list"])
     @patch("getpass.getpass")
     @patch("kini.password_manager.PasswordManager")
     def test_main_authentication_failure(self, mock_pm_class, mock_getpass):
@@ -476,7 +477,7 @@ class TestMainFunction:
         assert result == 1
         mock_pm.authenticate.assert_called_once()
 
-    @patch("sys.argv", ["cli-vault", "list"])
+    @patch("sys.argv", ["kini", "list"])
     @patch("getpass.getpass")
     @patch("kini.password_manager.PasswordManager")
     def test_main_keyboard_interrupt(self, mock_pm_class, mock_getpass):
@@ -490,7 +491,7 @@ class TestMainFunction:
 
         assert result == 1
 
-    @patch("sys.argv", ["cli-vault", "list"])
+    @patch("sys.argv", ["kini", "list"])
     @patch("getpass.getpass")
     @patch("kini.password_manager.PasswordManager")
     def test_main_exception(self, mock_pm_class, mock_getpass):

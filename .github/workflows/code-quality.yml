@@ -34,10 +34,10 @@ jobs:
         run: flake8 .
 
       - name: Type check with mypy
-        run: mypy cli_vault/ --ignore-missing-imports
+        run: mypy kini/ --ignore-missing-imports
 
       - name: Security check with bandit
-        run: bandit -r cli_vault/
+        run: bandit -r kini/
 
       - name: Safety check
         run: safety check
