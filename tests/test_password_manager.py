@@ -2,16 +2,14 @@ import os
 import shutil
 import sys
 import tempfile
+import pytest
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import pytest
+from kini.password_manager import PasswordManager, main
 
 # Add the parent directory to the path so we can import kini
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
-import kini.password_manager
-from kini.password_manager import PasswordManager, main
 
 
 class TestPasswordManager:

@@ -1,5 +1,7 @@
 # Kini - Secure Password Manager
 
+( Your secrets are safe )
+
 A secure command-line password manager with encryption, hashing, backup, and search capabilities.
 
 ## Features

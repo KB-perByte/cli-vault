@@ -8,10 +8,24 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
         line.strip() for line in fh if line.strip() and not line.startswith("#")
     ]
 
-# Read test requirements
-with open("requirements-test.txt", "r", encoding="utf-8") as fh:
+# Read test requirements (fallback if file doesn't exist)
+try:
+    with open("requirements-test.txt", "r", encoding="utf-8") as fh:
+        test_requirements = [
+            line.strip() for line in fh if line.strip() and not line.startswith("#")
+        ]
+except FileNotFoundError:
+    # Fallback test requirements for PyPI build
     test_requirements = [
-        line.strip() for line in fh if line.strip() and not line.startswith("#")
+        "pytest>=7.0.0",
+        "pytest-cov>=4.0.0",
+        "pytest-mock>=3.10.0",
+        "coverage>=7.0.0",
+        "black>=22.0.0",
+        "flake8>=5.0.0",
+        "isort>=5.0.0",
+        "mypy>=1.0.0",
+        "pre-commit>=2.20.0",
     ]
 
 setup(
@@ -19,7 +33,7 @@ setup(
     version="1.0.0",
     author="Sagar Paul",
     author_email="paul.sagar@yahoo.com",
-    description="A secure command-line password manager with encryption and backup capabilities",
+    description="A secure command-line password manager with encryption and backup",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com//KB-perByte/kini",

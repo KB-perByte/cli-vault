@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Secure Password Manager - Kini
-A command-line password manager with encryption, hashing, backup, and search capabilities.
+A command-line password manager with encryption, hashing, backup, and search.
 """
 
 import argparse
@@ -18,6 +18,8 @@ from pathlib import Path
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+
+from .mascot import welcome_message, show_mascot
 
 
 class PasswordManager:
@@ -74,9 +76,10 @@ class PasswordManager:
         if self.master_hash_file.exists():
             return False
 
-        print("Setting up Kini ...")
+        print(welcome_message())
         print(
-            "Please create a master password (this will be used to access all your passwords)"
+            "Please create a master password "
+            "(this will be used to access all your passwords)"
         )
 
         while True:
@@ -318,7 +321,8 @@ class PasswordManager:
             return
 
         confirm = input(
-            f"Are you sure you want to restore from '{backup_name}'? This will overwrite current data. (y/N): "
+            f"Are you sure you want to restore from '{backup_name}'? "
+            "This will overwrite current data. (y/N): "
         )
         if confirm.lower() == "y":
             try:
@@ -360,7 +364,12 @@ def main():
     parser.add_argument("--password", "-p", help="Password")
     parser.add_argument("--query", "-q", help="Search query")
     parser.add_argument("--backup-file", "-b", help="Backup file name")
-    parser.add_argument("--version", "-v", action="version", version="Kini 1.0.0")
+    parser.add_argument(
+        "--version",
+        "-v",
+        action="version",
+        version=f"Kini 1.0.0\n{show_mascot('mini')}",
+    )
 
     args = parser.parse_args()
 
