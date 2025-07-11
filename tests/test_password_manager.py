@@ -2,9 +2,10 @@ import os
 import shutil
 import sys
 import tempfile
-import pytest
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 from kini.password_manager import PasswordManager, main
 
