@@ -8,6 +8,12 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
         line.strip() for line in fh if line.strip() and not line.startswith("#")
     ]
 
+# Read test requirements
+with open("requirements-test.txt", "r", encoding="utf-8") as fh:
+    test_requirements = [
+        line.strip() for line in fh if line.strip() and not line.startswith("#")
+    ]
+
 setup(
     name="kini",
     version="1.0.0",
@@ -34,6 +40,10 @@ setup(
     ],
     python_requires=">=3.8",
     install_requires=requirements,
+    extras_require={
+        "test": test_requirements,
+        "dev": test_requirements,
+    },
     entry_points={
         "console_scripts": [
             "kini=kini.__main__:main",
@@ -44,4 +54,6 @@ setup(
         "Bug Reports": "https://github.com/KB-perByte/kini/issues",
         "Source": "https://github.com/KB-perByte/kini",
     },
+    # Test configuration
+    test_suite="tests",
 )

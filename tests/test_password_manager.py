@@ -1,17 +1,15 @@
 import os
-import json
 import tempfile
 import shutil
 import pytest
 from unittest.mock import patch, MagicMock
 from pathlib import Path
-from datetime import datetime
-
-# Add the parent directory to the path so we can import cli_vault
 import sys
 
+# Add the parent directory to the path so we can import kini
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
+import kini.password_manager
 from kini.password_manager import PasswordManager, main
 
 
@@ -107,12 +105,15 @@ class TestPasswordManager:
         pm.cipher = None
 
         # Test correct password
-        mock_getpass.return_value = "master_pass"
+        mock_getpass.side_effect = ["master_pass"]
         result = pm.authenticate()
         assert result is True
 
+        # Reset cipher to test authentication again
+        pm.cipher = None
+
         # Test incorrect password
-        mock_getpass.return_value = "wrong_pass"
+        mock_getpass.side_effect = ["wrong_pass"]
         result = pm.authenticate()
         assert result is False
 
@@ -318,19 +319,23 @@ class TestPasswordManager:
         pm.add_password("original", "user", "pass")
         pm.create_backup()
 
-        # Get backup filename
+        # Get backup filename (should only contain 'original')
         backups = list(pm.backup_dir.glob("passwords_backup_*.json"))
         backup_name = backups[0].name
 
-        # Modify data
+        # Modify data (add new service)
         pm.add_password("new_service", "user", "pass")
+
+        # Verify both services exist before restore
+        assert "original" in pm.data["passwords"]
+        assert "new_service" in pm.data["passwords"]
 
         # Test restore cancellation
         with patch("builtins.input", return_value="n"):
             pm.restore_backup(backup_name)
             assert "new_service" in pm.data["passwords"]
 
-        # Test restore
+        # Test restore - should restore to state with only 'original'
         with patch("builtins.input", return_value="y"):
             pm.restore_backup(backup_name)
             assert "new_service" not in pm.data["passwords"]
@@ -368,7 +373,7 @@ class TestPasswordManager:
 
         # Create new instance and load data
         pm2 = PasswordManager(data_dir=str(pm.data_dir))
-        mock_getpass.return_value = "master_pass"
+        mock_getpass.side_effect = ["master_pass"]
         pm2.authenticate()
 
         # Check data was loaded
@@ -388,7 +393,7 @@ class TestMainFunction:
 
     @patch("sys.argv", ["cli-vault", "list"])
     @patch("getpass.getpass")
-    @patch("cli_vault.password_manager.PasswordManager")
+    @patch("kini.password_manager.PasswordManager")
     def test_main_list_command(self, mock_pm_class, mock_getpass):
         """Test main function with list command"""
         mock_pm = MagicMock()
@@ -403,7 +408,7 @@ class TestMainFunction:
 
     @patch("sys.argv", ["cli-vault", "add", "-s", "test", "-u", "user", "-p", "pass"])
     @patch("getpass.getpass")
-    @patch("cli_vault.password_manager.PasswordManager")
+    @patch("kini.password_manager.PasswordManager")
     def test_main_add_command(self, mock_pm_class, mock_getpass):
         """Test main function with add command"""
         mock_pm = MagicMock()
@@ -417,7 +422,7 @@ class TestMainFunction:
 
     @patch("sys.argv", ["cli-vault", "get", "-s", "test"])
     @patch("getpass.getpass")
-    @patch("cli_vault.password_manager.PasswordManager")
+    @patch("kini.password_manager.PasswordManager")
     def test_main_get_command(self, mock_pm_class, mock_getpass):
         """Test main function with get command"""
         mock_pm = MagicMock()
@@ -431,7 +436,7 @@ class TestMainFunction:
 
     @patch("sys.argv", ["cli-vault", "search", "-q", "query"])
     @patch("getpass.getpass")
-    @patch("cli_vault.password_manager.PasswordManager")
+    @patch("kini.password_manager.PasswordManager")
     def test_main_search_command(self, mock_pm_class, mock_getpass):
         """Test main function with search command"""
         mock_pm = MagicMock()
@@ -445,7 +450,7 @@ class TestMainFunction:
 
     @patch("sys.argv", ["cli-vault", "backup"])
     @patch("getpass.getpass")
-    @patch("cli_vault.password_manager.PasswordManager")
+    @patch("kini.password_manager.PasswordManager")
     def test_main_backup_command(self, mock_pm_class, mock_getpass):
         """Test main function with backup command"""
         mock_pm = MagicMock()
@@ -459,7 +464,7 @@ class TestMainFunction:
 
     @patch("sys.argv", ["cli-vault", "list"])
     @patch("getpass.getpass")
-    @patch("cli_vault.password_manager.PasswordManager")
+    @patch("kini.password_manager.PasswordManager")
     def test_main_authentication_failure(self, mock_pm_class, mock_getpass):
         """Test main function with authentication failure"""
         mock_pm = MagicMock()
@@ -473,7 +478,7 @@ class TestMainFunction:
 
     @patch("sys.argv", ["cli-vault", "list"])
     @patch("getpass.getpass")
-    @patch("cli_vault.password_manager.PasswordManager")
+    @patch("kini.password_manager.PasswordManager")
     def test_main_keyboard_interrupt(self, mock_pm_class, mock_getpass):
         """Test main function with keyboard interrupt"""
         mock_pm = MagicMock()
@@ -487,7 +492,7 @@ class TestMainFunction:
 
     @patch("sys.argv", ["cli-vault", "list"])
     @patch("getpass.getpass")
-    @patch("cli_vault.password_manager.PasswordManager")
+    @patch("kini.password_manager.PasswordManager")
     def test_main_exception(self, mock_pm_class, mock_getpass):
         """Test main function with general exception"""
         mock_pm = MagicMock()

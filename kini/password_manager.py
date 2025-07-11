@@ -276,7 +276,7 @@ class PasswordManager:
 
     def create_backup(self):
         """Create backup of password database"""
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
         backup_file = self.backup_dir / f"passwords_backup_{timestamp}.json"
 
         try:
@@ -296,9 +296,16 @@ class PasswordManager:
         print(f"\nAvailable backups ({len(backups)} total):")
         for i, backup in enumerate(sorted(backups), 1):
             timestamp = backup.stem.split("_", 2)[2]
-            formatted_time = datetime.strptime(timestamp, "%Y%m%d_%H%M%S").strftime(
-                "%Y-%m-%d %H:%M:%S"
-            )
+            try:
+                # Try new format with microseconds first
+                formatted_time = datetime.strptime(
+                    timestamp, "%Y%m%d_%H%M%S_%f"
+                ).strftime("%Y-%m-%d %H:%M:%S")
+            except ValueError:
+                # Fall back to old format without microseconds
+                formatted_time = datetime.strptime(timestamp, "%Y%m%d_%H%M%S").strftime(
+                    "%Y-%m-%d %H:%M:%S"
+                )
             print(f"{i}. {backup.name} - {formatted_time}")
 
     def restore_backup(self, backup_name: str):

@@ -106,13 +106,65 @@ kini --version
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
+## Development and Testing
+
+### Installing Development Dependencies
+
+```bash
+# Install with development dependencies
+pip install -e .[dev]
+
+# Or install test dependencies only
+pip install -r requirements-test.txt
+```
+
+### Running Tests
+
+```bash
+# Run all tests
+pytest tests/ -v
+
+# Run tests with coverage
+pytest tests/ --cov=kini --cov-report=term-missing --cov-report=html
+
+# Using make commands
+make test          # Run tests
+make test-cov      # Run tests with coverage
+make lint          # Run linting
+make format        # Format code
+make install-dev   # Install dev dependencies
+```
+
+### Using Tox for Multi-Version Testing
+
+```bash
+# Install tox
+pip install tox
+
+# Run tests across all Python versions
+tox
+
+# Run specific environments
+tox -e py311        # Test Python 3.11
+tox -e lint         # Run linting
+tox -e coverage     # Run coverage report
+```
+
+### Test Structure
+
+- `tests/test_password_manager.py` - Main test suite
+- `tests/conftest.py` - Test configuration and fixtures
+- `pytest.ini` - Pytest configuration
+- `tox.ini` - Tox configuration for multi-version testing
+
 ## Contributing
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
 4. Add tests if applicable
-5. Submit a pull request
+5. Run the test suite: `make test`
+6. Submit a pull request
 
 ## Security Considerations
 
