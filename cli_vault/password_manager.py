@@ -10,6 +10,7 @@ import hashlib
 import getpass
 import argparse
 import shutil
+import sys
 from datetime import datetime
 from pathlib import Path
 from cryptography.fernet import Fernet
@@ -72,7 +73,7 @@ class PasswordManager:
         if self.master_hash_file.exists():
             return False
 
-        print("Setting up Password Manager...")
+        print("Setting up CLI Vault...")
         print(
             "Please create a master password (this will be used to access all your passwords)"
         )
@@ -328,7 +329,10 @@ class PasswordManager:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Secure Password Manager CLI")
+    """Main entry point for CLI Vault"""
+    parser = argparse.ArgumentParser(
+        description="CLI Vault - Secure Password Manager", prog="cli-vault"
+    )
     parser.add_argument(
         "command",
         help="Command to execute",
@@ -348,6 +352,7 @@ def main():
     parser.add_argument("--password", "-p", help="Password")
     parser.add_argument("--query", "-q", help="Search query")
     parser.add_argument("--backup-file", "-b", help="Backup file name")
+    parser.add_argument("--version", "-v", action="version", version="CLI Vault 1.0.0")
 
     args = parser.parse_args()
 
@@ -357,54 +362,64 @@ def main():
     # Authenticate user
     if not pm.authenticate():
         print("Authentication failed!")
-        return
+        return 1
 
     # Execute command
-    if args.command == "add":
-        if not args.service:
-            args.service = input("Service name: ")
-        if not args.username:
-            args.username = input("Username: ")
-        if not args.password:
-            args.password = getpass.getpass("Password: ")
+    try:
+        if args.command == "add":
+            if not args.service:
+                args.service = input("Service name: ")
+            if not args.username:
+                args.username = input("Username: ")
+            if not args.password:
+                args.password = getpass.getpass("Password: ")
 
-        pm.add_password(args.service, args.username, args.password)
+            pm.add_password(args.service, args.username, args.password)
 
-    elif args.command == "get":
-        if not args.service:
-            args.service = input("Service name: ")
-        pm.get_password(args.service)
+        elif args.command == "get":
+            if not args.service:
+                args.service = input("Service name: ")
+            pm.get_password(args.service)
 
-    elif args.command == "search":
-        if not args.query:
-            args.query = input("Search query: ")
-        pm.search_passwords(args.query)
+        elif args.command == "search":
+            if not args.query:
+                args.query = input("Search query: ")
+            pm.search_passwords(args.query)
 
-    elif args.command == "list":
-        pm.list_passwords()
+        elif args.command == "list":
+            pm.list_passwords()
 
-    elif args.command == "history":
-        if not args.service:
-            args.service = input("Service name: ")
-        pm.show_history(args.service)
+        elif args.command == "history":
+            if not args.service:
+                args.service = input("Service name: ")
+            pm.show_history(args.service)
 
-    elif args.command == "delete":
-        if not args.service:
-            args.service = input("Service name: ")
-        pm.delete_password(args.service)
+        elif args.command == "delete":
+            if not args.service:
+                args.service = input("Service name: ")
+            pm.delete_password(args.service)
 
-    elif args.command == "backup":
-        if args.backup_file == "list":
-            pm.list_backups()
-        else:
-            pm.create_backup()
+        elif args.command == "backup":
+            if args.backup_file == "list":
+                pm.list_backups()
+            else:
+                pm.create_backup()
 
-    elif args.command == "restore":
-        if not args.backup_file:
-            pm.list_backups()
-            args.backup_file = input("Enter backup filename: ")
-        pm.restore_backup(args.backup_file)
+        elif args.command == "restore":
+            if not args.backup_file:
+                pm.list_backups()
+                args.backup_file = input("Enter backup filename: ")
+            pm.restore_backup(args.backup_file)
+
+        return 0
+
+    except KeyboardInterrupt:
+        print("\nOperation cancelled by user.")
+        return 1
+    except Exception as e:
+        print(f"Error: {e}")
+        return 1
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
