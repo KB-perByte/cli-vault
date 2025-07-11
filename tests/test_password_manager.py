@@ -12,7 +12,7 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from cli_vault.password_manager import PasswordManager, main
+from kini.password_manager import PasswordManager, main
 
 
 class TestPasswordManager:
